@@ -7,5 +7,6 @@ import { EventResolver } from "./event.resolver";
 @Module({
   imports: [TypeOrmModule.forFeature([EventEntity])],
   providers: [EventService, EventResolver],
+  exports: [TypeOrmModule],
 })
 export class EventModule {}

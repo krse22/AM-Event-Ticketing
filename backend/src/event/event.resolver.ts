@@ -1,4 +1,3 @@
-// src/event/event.resolver.ts
 import { Resolver, Query, Mutation, Args, Int } from "@nestjs/graphql";
 import { EventService } from "./event.service";
 import { EventEntity } from "./event.entity";
@@ -14,7 +13,7 @@ export class EventResolver {
 
   @Mutation(() => EventEntity)
   async updateEvent(
-    @Args("id", { type: () => Int }) id: number, 
+    @Args("id", { type: () => Int }) id: number,
     @Args("name", { nullable: true }) name?: string,
     @Args("description", { nullable: true }) description?: string
   ): Promise<EventEntity> {

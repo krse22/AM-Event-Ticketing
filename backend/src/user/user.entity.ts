@@ -2,6 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, OneToMany, CreateDateColumn } f
 import { Field, ObjectType, ID } from '@nestjs/graphql';
 import { Ticket } from '../ticket/ticket.entity';
 import { TicketUser } from '../ticket/ticket_user.entity';
+import { OrderEntity } from '../order/order.entity';
 
 @ObjectType()
 @Entity()
@@ -29,6 +30,9 @@ export class User {
   @Field()
   @Column()
   password: string; // Store hashed password here
+
+  @OneToMany(() => OrderEntity, (order) => order.user)
+  orders: Ticket[];
 
   @OneToMany(() => Ticket, (ticket) => ticket.user)
   tickets: Ticket[];

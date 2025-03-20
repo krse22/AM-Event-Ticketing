@@ -20,6 +20,8 @@ type OrderEntity {
   id: Int!
   eventId: Int!
   event: EventEntity!
+  userId: Int!
+  user: User!
   cost: Int!
   createdAt: DateTime!
   numberOfTickets: Int!
@@ -46,13 +48,13 @@ type Query {
   users: [User!]!
   user(id: Int!): User
   tickets: [Ticket!]!
-  getOrders: [OrderEntity!]!
+  getOrdersByUser(userId: Int!): [OrderEntity!]!
   getEvents: [EventEntity!]!
 }
 
 type Mutation {
   createUser(input: CreateUserInput!): User!
-  createOrder(eventId: Int!, cost: Int!, numberOfTickets: Int!): OrderEntity!
+  createOrder(createOrderInput: CreateOrderDto!): OrderEntity!
   updateEvent(id: Int!, name: String, description: String): EventEntity!
   createEvent(name: String!, description: String!, ticketLimit: Int!): EventEntity!
 }
@@ -62,4 +64,10 @@ input CreateUserInput {
   lastName: String!
   email: String!
   password: String!
+}
+
+input CreateOrderDto {
+  eventId: Int!
+  numberOfTickets: Int!
+  userId: Int!
 }
