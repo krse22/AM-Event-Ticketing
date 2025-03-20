@@ -53,6 +53,7 @@ type Query {
 type Mutation {
   createUser(input: CreateUserInput!): User!
   createOrder(eventId: Int!, cost: Int!, numberOfTickets: Int!): OrderEntity!
+  updateEvent(id: Int!, name: String, description: String): EventEntity!
   createEvent(name: String!, description: String!, ticketLimit: Int!): EventEntity!
 }
 

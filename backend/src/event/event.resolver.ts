@@ -13,6 +13,15 @@ export class EventResolver {
   }
 
   @Mutation(() => EventEntity)
+  async updateEvent(
+    @Args("id", { type: () => Int }) id: number, 
+    @Args("name", { nullable: true }) name?: string,
+    @Args("description", { nullable: true }) description?: string
+  ): Promise<EventEntity> {
+    return this.eventService.update(id, { name, description });
+  }
+
+  @Mutation(() => EventEntity)
   async createEvent(
     @Args("name") name: string,
     @Args("description") description: string,
