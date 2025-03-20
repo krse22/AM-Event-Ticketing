@@ -51,6 +51,14 @@ type Query {
 }
 
 type Mutation {
+  createUser(input: CreateUserInput!): User!
   createOrder(eventId: Int!, cost: Int!, numberOfTickets: Int!): OrderEntity!
   createEvent(name: String!, description: String!, ticketLimit: Int!): EventEntity!
+}
+
+input CreateUserInput {
+  firstName: String!
+  lastName: String!
+  email: String!
+  password: String!
 }
