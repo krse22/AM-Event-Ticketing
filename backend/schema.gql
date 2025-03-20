@@ -2,15 +2,55 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type EventEntity {
+  id: Int!
+  name: String!
+  description: String!
+  ticketLimit: Int!
+  ticketsSold: Int!
+  createdAt: DateTime!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type OrderEntity {
+  id: Int!
+  eventId: Int!
+  event: EventEntity!
+  cost: Int!
+  createdAt: DateTime!
+  numberOfTickets: Int!
+}
+
+type Ticket {
+  id: Float!
+  user: User!
+  order: OrderEntity!
+  event: EventEntity!
+  createdAt: DateTime!
+}
+
 type User {
   id: ID!
   firstName: String!
   lastName: String!
   email: String!
+  createdAt: DateTime!
   password: String!
 }
 
 type Query {
   users: [User!]!
   user(id: Int!): User
+  tickets: [Ticket!]!
+  getOrders: [OrderEntity!]!
+  getEvents: [EventEntity!]!
+}
+
+type Mutation {
+  createOrder(eventId: Int!, cost: Int!, numberOfTickets: Int!): OrderEntity!
+  createEvent(name: String!, description: String!, ticketLimit: Int!): EventEntity!
 }

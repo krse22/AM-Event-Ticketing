@@ -1,11 +1,12 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './user/user.module';
 import { AppDataSource } from './data-source';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
+import { TicketModule } from './ticket/ticket.module';
+import { OrderModule } from './order/order.module';
+import { EventModule } from './event/event.module';
 
 @Module({
   imports: [
@@ -18,9 +19,10 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
         return AppDataSource.options; // Provide the DataSource options
       },
     }),
-    UserModule
+    UserModule,
+    TicketModule,
+    OrderModule,
+    EventModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
 })
 export class AppModule {}

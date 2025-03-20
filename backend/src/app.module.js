@@ -1,4 +1,8 @@
 "use strict";
+import { TicketModule } from './ticket/ticket.module';
+import { OrderModule } from './order/order.module';
+import { EventModule } from './event/event.module';
+import { EventModule } from './event/event.module';
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
