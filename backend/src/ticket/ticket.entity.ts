@@ -1,9 +1,9 @@
-import { Entity, PrimaryGeneratedColumn, ManyToOne, OneToMany, CreateDateColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, ManyToOne, OneToMany, CreateDateColumn, Column } from 'typeorm';
 import { User } from '../user/user.entity'; // Assuming you have a User entity
 import { OrderEntity } from '../order/order.entity';
 import { EventEntity } from '../event/event.entity';
 import { TicketUser } from './ticket_user.entity';
-import { Field, ObjectType } from '@nestjs/graphql';
+import { Field, Int, ObjectType } from '@nestjs/graphql';
 
 @ObjectType()
 @Entity()
@@ -11,6 +11,10 @@ export class Ticket {
   @PrimaryGeneratedColumn()
   @Field()
   id: number;
+
+  @Field(() => Int)
+  @Column()
+  userId: number;
 
   @ManyToOne(() => User, (user) => user.tickets)
   @Field(() => User)

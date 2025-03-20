@@ -42,7 +42,7 @@ export class OrderService {
       }
 
       event.ticketsSold += data.numberOfTickets;
-      const order = transactionalEntityManager.create(OrderEntity, {
+      const order = await transactionalEntityManager.save(OrderEntity, {
         eventId: event.id,
         userId: user.id,
         cost: 250,
@@ -54,13 +54,14 @@ export class OrderService {
               SELECT generate_series(1, $1) AS repeat_count  -- $1 is the number of repetitions
           )
           INSERT INTO ticket ("userId", "orderId", "eventId")
-          VALUES ($2, $3, $4)
+          SELECT $2, $3, $4
+          FROM series;
         `;
 
       await transactionalEntityManager.query(query, [data.numberOfTickets, user.id, order.id, event.id]);
 
       await transactionalEntityManager.save(EventEntity, event);
-      return await transactionalEntityManager.save(OrderEntity, order);
+      return order;
     });
   }
 }

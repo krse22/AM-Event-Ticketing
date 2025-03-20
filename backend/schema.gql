@@ -29,6 +29,7 @@ type OrderEntity {
 
 type Ticket {
   id: Float!
+  userId: Int!
   user: User!
   order: OrderEntity!
   event: EventEntity!
@@ -47,7 +48,7 @@ type User {
 type Query {
   users: [User!]!
   user(id: Int!): User
-  tickets: [Ticket!]!
+  ticketsByUser(userId: Float!): [Ticket!]!
   getOrdersByUser(userId: Int!): [OrderEntity!]!
   getEvents: [EventEntity!]!
 }
