@@ -3,14 +3,16 @@ import { View, StyleSheet } from 'react-native';
 import { TextInput, Button, Paragraph, ActivityIndicator, Text } from 'react-native-paper';
 import { useMutation } from '@apollo/client';
 import { gql } from '@apollo/client';
+import { useSelector } from 'react-redux';
+import { useTypedSelector } from './store';
 
 export const CREATE_EVENT = gql`
-  mutation createEvent($name: String!, $description: String!, $ticketLimit: Int!) {
-    createEvent(name: $name, description: $description, ticketLimit: $ticketLimit) {
+   mutation createEvent($input: CreateEventInput!) {
+    createEvent(input: $input) {
+      id
       name
       description
       ticketLimit
-      id
     }
   }
 `;
@@ -30,6 +32,8 @@ const AddEvent = ({ navigation }) => {
   const [description, setDescription] = useState('');
   const [ticketLimit, setTicketLimit] = useState('');
 
+  const user = useTypedSelector((state) => state.user);
+
   // Mutation hook
   const [createEvent, { loading, error }] = useMutation(CREATE_EVENT, {
     onCompleted: (data: ICreateEventReturn) => {
@@ -39,6 +43,8 @@ const AddEvent = ({ navigation }) => {
     },
   });
 
+  console.log(JSON.stringify(error, null, 10));
+
   if (loading) return <ActivityIndicator animating={true} size="large" />;
   if (error) return <Text>Error: {error.message}</Text>;
 
@@ -47,9 +53,12 @@ const AddEvent = ({ navigation }) => {
       // Submit the form data as variables for the mutation
       await createEvent({
         variables: {
-          name,
-          description,
-          ticketLimit: parseInt(ticketLimit),  // Ensure it's an integer
+          input: {
+            name,
+            description,
+            ticketLimit: parseInt(ticketLimit),
+            userId: parseInt(user.id),
+          }
         },
       });
     } catch (err) {

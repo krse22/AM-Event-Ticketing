@@ -3,7 +3,6 @@ import { View, StyleSheet, Button } from 'react-native';
 import { Text, Title, Paragraph, ActivityIndicator } from 'react-native-paper';
 import { useQuery } from '@apollo/client';
 import { gql } from '@apollo/client';
-import { useNavigation } from '@react-navigation/native';
 
 export const GET_EVENT_BY_ID = gql`
   query getEventById($id: Int!) {
@@ -18,20 +17,19 @@ export const GET_EVENT_BY_ID = gql`
 `;
 
 const EventCreated = ({ route, navigation }) => {
-  const { id } = route.params;  // Get the event ID passed as params
+  const { id } = route.params;
 
-  // Fetch event details using the getEventById query
   const { data, loading, error } = useQuery(GET_EVENT_BY_ID, {
     variables: { id: Number(id) },
   });
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('beforeRemove', (e) => {
-      e.preventDefault(); // Stop default back behavior
-      navigation.navigate('EventList'); // Always go to EventList
+      e.preventDefault();
+      navigation.navigate('EventList');
     });
 
-    return unsubscribe; // Cleanup on unmount
+    return unsubscribe;
   }, [navigation]);
 
   if (loading) return <ActivityIndicator animating={true} size="large" />;

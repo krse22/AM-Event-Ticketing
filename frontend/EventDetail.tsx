@@ -1,8 +1,9 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, RefreshControl } from 'react-native';
-import { useQuery, gql } from '@apollo/client';
-import { ActivityIndicator, Title, Paragraph } from 'react-native-paper';
+import { useQuery, gql, useMutation } from '@apollo/client';
+import { ActivityIndicator, Title, Paragraph, Snackbar, TextInput, Button } from 'react-native-paper';
 import { useFocusEffect } from '@react-navigation/native';
+import { useTypedSelector } from './store';
 
 const GET_EVENT_BY_ID = gql`
   query getEventById($id: Int!) {
@@ -16,12 +17,28 @@ const GET_EVENT_BY_ID = gql`
   }
 `;
 
-const EventDetail = ({ route }) => {
+
+const CREATE_ORDER = gql`
+  mutation createOrder($createOrderInput: CreateOrderDto!) {
+    createOrder(createOrderInput: $createOrderInput) {
+      id
+      eventId
+      userId
+      numberOfTickets
+    }
+  }
+`;
+
+const EventDetail = ({ route, navigation }) => {
   const { id } = route.params; // Get the event ID from route params
   const { data, loading, error, refetch } = useQuery(GET_EVENT_BY_ID, {
     variables: { id: Number(id) },
   });
-  const [refreshing, setRefreshing] = React.useState(false);
+
+  const [createOrder] = useMutation(CREATE_ORDER);
+  const [numberOfTickets, setNumberOfTickets] = useState(1);
+  const [snackbarVisible, setSnackbarVisible] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
@@ -29,7 +46,9 @@ const EventDetail = ({ route }) => {
     }, [])
   );
 
-  // console.error(JSON.stringify(error, null, 10));
+  const user = useTypedSelector((state) => state.user);
+
+  console.error(JSON.stringify(error, null, 10));
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -41,6 +60,23 @@ const EventDetail = ({ route }) => {
   if (error) return <Text>Error: {error.message} {id}</Text>;
 
   const event = data.getEventById;
+  const isButtonDisabled = numberOfTickets > event.ticketLimit - event.ticketsSold;
+
+  const handleTicketPurchase = () => {
+    createOrder({
+      variables: {
+        createOrderInput: {
+          eventId: Number(event.id),
+          userId: Number(user.id),
+          numberOfTickets: numberOfTickets,
+        },
+      },
+    })
+      .then((response) => {
+        navigation.navigate({ name: 'OrderCreated', params: { order: response.data.createOrder }});
+      })
+      .catch((err) => console.log(JSON.stringify(err, null, 10)));
+  };
 
   return (
     <ScrollView
@@ -52,6 +88,30 @@ const EventDetail = ({ route }) => {
       <Paragraph>
         Tickets Sold: {event.ticketsSold} / {event.ticketLimit}
       </Paragraph>
+
+      <TextInput
+        label="Number of Tickets"
+        keyboardType="numeric"
+        value={String(numberOfTickets)}
+        onChangeText={(text) => setNumberOfTickets((Number(text)))}
+        style={styles.input}
+      />
+      <Button
+        mode="contained"
+        onPress={handleTicketPurchase}
+        disabled={isButtonDisabled}
+        style={styles.button}
+      >
+        Buy {numberOfTickets} Ticket(s)
+      </Button>
+      {isButtonDisabled && <Snackbar visible={snackbarVisible} onDismiss={() => setSnackbarVisible(false)}>{`Not enough tickets available`}</Snackbar>}
+
+      {/* Snackbar for error */}
+      {isButtonDisabled && (
+        <Snackbar visible={true} onDismiss={() => setSnackbarVisible(false)}>
+          Not enough tickets available
+        </Snackbar>
+      )}
     </ScrollView>
   );
 };
@@ -65,6 +125,12 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 10,
+  },
+  input: {
+    marginBottom: 20,
+  },
+  button: {
+    marginBottom: 20,
   },
 });
 

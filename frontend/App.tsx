@@ -13,6 +13,7 @@ import EventDetail from './EventDetail';
 import { useEffect } from 'react';
 import AddEvent from './AddEvent';
 import EventCreated from './EventCreated';
+import OrderCreated from './OrderCreated';
 
 const Stack = createStackNavigator();
 
@@ -93,6 +94,7 @@ export default function App() {
                 <Stack.Screen name="EventDetail" component={EventDetail} />
                 <Stack.Screen name="AddEvent" component={AddEvent} />
                 <Stack.Screen name="EventCreated" component={EventCreated} />
+                <Stack.Screen name="OrderCreated" component={OrderCreated} />
               </Stack.Navigator>
             </UserLoader>
           </ApolloProvider>

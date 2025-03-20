@@ -1,49 +1,42 @@
 import { configureStore, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { useSelector, TypedUseSelectorHook } from 'react-redux';
 
-interface EventState {
-  events: Array<{ id: string; name: string; description: string; ticketsSold: number; ticketLimit: number }>;
+interface UserState {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  createdAt: string;
 }
 
-const initialState: EventState = {
-  events: [],
+const initialUserState: UserState = {
+  id: null,
+  firstName: '',
+  lastName: '',
+  email: '',
+  createdAt: '',
 };
-
-const eventSlice = createSlice({
-  name: 'events',
-  initialState,
-  reducers: {
-    setEvents: (state, action: PayloadAction<EventState['events']>) => {
-      state.events = action.payload;
-    },
-  },
-});
 
 const userSlice = createSlice({
   name: 'user',
-  initialState: {
-    id: null,
-    firstName: '',
-    lastName: '',
-    email: '',
-    createdAt: '',
-    loading: false,
-    error: null,
-  },
+  initialState: initialUserState,
   reducers: {
-    setUser: (state, action) => {
-      return { ...state, ...action.payload, loading: false, error: null };
+    setUser: (state, action: PayloadAction<Partial<UserState>>) => {
+      return {
+        ...state, ...action.payload, loading: false, error: null };
     },
   },
 });
 
-export const { setEvents } = eventSlice.actions;
 
+export const { setUser } = userSlice.actions;
 const store = configureStore({
   reducer: {
-    events: eventSlice.reducer,
+    user: userSlice.reducer,
   },
 });
 
-export const { setUser } = userSlice.actions;
 export type RootState = ReturnType<typeof store.getState>;
+export const useTypedSelector: TypedUseSelectorHook<RootState> = useSelector;
+
 export default store;
