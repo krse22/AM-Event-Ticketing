@@ -20,8 +20,15 @@ const EventDetail = ({ route }) => {
   const { data, loading, error, refetch } = useQuery(GET_EVENT_BY_ID, {
     variables: { id: Number(id) },
   });
+  const [refreshing, setRefreshing] = React.useState(false);
 
   // console.error(JSON.stringify(error, null, 10));
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await refetch();
+    setRefreshing(false);
+  };
 
   if (loading) return <ActivityIndicator animating={true} size="large" />;
   if (error) return <Text>Error: {error.message} {id}</Text>;
@@ -29,13 +36,16 @@ const EventDetail = ({ route }) => {
   const event = data.getEventById;
 
   return (
-    <View style={styles.container}>
+    <ScrollView
+      style={styles.container}
+      refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+    >
       <Title style={styles.eventTitle}>{event.name}</Title>
       <Paragraph>{event.description}</Paragraph>
       <Paragraph>
         Tickets Sold: {event.ticketsSold} / {event.ticketLimit}
       </Paragraph>
-    </View>
+    </ScrollView>
   );
 };
 
