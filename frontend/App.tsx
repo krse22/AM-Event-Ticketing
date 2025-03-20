@@ -11,6 +11,8 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { Appbar } from 'react-native-paper';
 import EventDetail from './EventDetail';
 import { useEffect } from 'react';
+import AddEvent from './AddEvent';
+import EventCreated from './EventCreated';
 
 const Stack = createStackNavigator();
 
@@ -89,6 +91,8 @@ export default function App() {
               >
                 <Stack.Screen name="EventList" component={EventList} />
                 <Stack.Screen name="EventDetail" component={EventDetail} />
+                <Stack.Screen name="AddEvent" component={AddEvent} />
+                <Stack.Screen name="EventCreated" component={EventCreated} />
               </Stack.Navigator>
             </UserLoader>
           </ApolloProvider>

@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 import { useQuery, gql } from '@apollo/client';
 import { Card, Text, ActivityIndicator, Title, Paragraph, Button } from 'react-native-paper';
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 
 const GET_EVENTS = gql`
   query getEvents {
@@ -27,9 +27,16 @@ const EventList = () => {
     setRefreshing(false);
   };
 
+  useFocusEffect(
+    useCallback(() => {
+      refetch();
+    }, [])
+  );
+
   const handleAddEvent = () => {
     navigation.navigate({ name: 'AddEvent', params: {} });
   };
+
 
   if (loading) return <ActivityIndicator animating={true} size="large" />;
   if (error) return <Text>Error: {error.message}</Text>;

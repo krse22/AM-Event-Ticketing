@@ -1,7 +1,8 @@
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, RefreshControl } from 'react-native';
 import { useQuery, gql } from '@apollo/client';
 import { ActivityIndicator, Title, Paragraph } from 'react-native-paper';
+import { useFocusEffect } from '@react-navigation/native';
 
 const GET_EVENT_BY_ID = gql`
   query getEventById($id: Int!) {
@@ -21,6 +22,12 @@ const EventDetail = ({ route }) => {
     variables: { id: Number(id) },
   });
   const [refreshing, setRefreshing] = React.useState(false);
+
+  useFocusEffect(
+    useCallback(() => {
+      refetch();
+    }, [])
+  );
 
   // console.error(JSON.stringify(error, null, 10));
 
