@@ -3,6 +3,7 @@ import { Field, ObjectType, ID } from '@nestjs/graphql';
 import { Ticket } from '../ticket/ticket.entity';
 import { TicketUser } from '../ticket/ticket_user.entity';
 import { OrderEntity } from '../order/order.entity';
+import { EventEntity } from '../event/event.entity';
 
 @ObjectType()
 @Entity()
@@ -33,6 +34,9 @@ export class User {
 
   @OneToMany(() => OrderEntity, (order) => order.user)
   orders: Ticket[];
+
+  @OneToMany(() => EventEntity, (event) => event.user)
+  events: EventEntity[];
 
   @OneToMany(() => Ticket, (ticket) => ticket.user)
   tickets: Ticket[];

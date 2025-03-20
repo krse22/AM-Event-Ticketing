@@ -13,4 +13,8 @@ export class CreateEventInput {
   @Min(2)
   @Field(() => Int)
   ticketLimit: number;
+
+  @IsInt()
+  @Field(() => Int)
+  userId: number;
 }

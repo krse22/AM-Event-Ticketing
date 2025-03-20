@@ -51,13 +51,14 @@ type Query {
   ticketsByUser(userId: Float!): [Ticket!]!
   getOrdersByUser(userId: Int!): [OrderEntity!]!
   getEvents: [EventEntity!]!
+  getEventById(id: Int!): EventEntity!
 }
 
 type Mutation {
   createUser(input: CreateUserInput!): User!
   createOrder(createOrderInput: CreateOrderDto!): OrderEntity!
   updateEvent(id: Int!, name: String, description: String): EventEntity!
-  createEvent(name: String!, description: String!, ticketLimit: Int!): EventEntity!
+  createEvent(input: CreateEventInput!): EventEntity!
 }
 
 input CreateUserInput {
@@ -70,5 +71,12 @@ input CreateUserInput {
 input CreateOrderDto {
   eventId: Int!
   numberOfTickets: Int!
+  userId: Int!
+}
+
+input CreateEventInput {
+  name: String!
+  description: String!
+  ticketLimit: Int!
   userId: Int!
 }

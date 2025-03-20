@@ -44,4 +44,8 @@ export class EventService {
     return this.eventRepository.find();
   }
 
+  async getEventById(id: number): Promise<EventEntity> {
+    return this.eventRepository.findOneByOrFail({ id });
+  }
+
 }

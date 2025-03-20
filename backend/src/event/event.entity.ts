@@ -1,6 +1,7 @@
 import { ObjectType, Field, Int } from "@nestjs/graphql";
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, CreateDateColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, CreateDateColumn, ManyToOne } from 'typeorm';
 import { Ticket } from '../ticket/ticket.entity';
+import { User } from '../user/user.entity';
 
 @ObjectType()
 @Entity()
@@ -28,6 +29,12 @@ export class EventEntity {
   @Field()
   @CreateDateColumn()
   createdAt: Date;
+
+  @Column()
+  userId: number;
+
+  @ManyToOne(() => User, (user) => user.events, { onDelete: "CASCADE" })
+  user: User;
 
   @OneToMany(() => Ticket, (ticket) => ticket.event)
   tickets: Ticket[];
