@@ -1,7 +1,8 @@
-// EventList.tsx
-import React from 'react';
-import { View, Text, FlatList, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { FlatList, StyleSheet } from 'react-native';
 import { useQuery, gql } from '@apollo/client';
+import { Card, Text, ActivityIndicator, Title, Paragraph } from 'react-native-paper';
+import { useNavigation } from '@react-navigation/native';
 
 const GET_EVENTS = gql`
   query getEvents {
@@ -16,48 +17,49 @@ const GET_EVENTS = gql`
 `;
 
 const EventList = () => {
-  const { data, loading, error } = useQuery(GET_EVENTS);
+  const { data, loading, error, refetch } = useQuery(GET_EVENTS);
+  const [refreshing, setRefreshing] = useState(false);
+  const navigation = useNavigation();
 
-  if (loading) return <Text>Loading...</Text>;
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await refetch();
+    setRefreshing(false);
+  };
+
+
+
+  if (loading) return <ActivityIndicator animating={true} size="large" />;
   if (error) return <Text>Error: {error.message}</Text>;
 
   return (
-    <View style={styles.container}>
-      <FlatList
-        data={data.getEvents}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <View style={styles.eventCard}>
-            <Text style={styles.eventTitle}>{item.name}</Text>
-            <Text>{item.description}</Text>
-            <Text>
+    <FlatList
+      data={data.getEvents}
+      keyExtractor={(item) => item.id}
+      renderItem={({ item }) => (
+        <Card style={styles.eventCard} onPress={() => navigation.navigate({ name: 'EventDetail', params: { id: item.id } })}>
+          <Card.Content>
+            <Title style={styles.eventTitle}>{item.name}</Title>
+            <Paragraph>{item.description}</Paragraph>
+            <Paragraph>
               Tickets Sold: {item.ticketsSold} / {item.ticketLimit}
-            </Text>
-          </View>
-        )}
-      />
-    </View>
+            </Paragraph>
+          </Card.Content>
+        </Card>
+      )}
+      refreshing={refreshing}
+      onRefresh={onRefresh}
+    />
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 10,
-  },
   eventCard: {
-    backgroundColor: '#fff',
-    padding: 15,
     marginBottom: 10,
     borderRadius: 5,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.8,
-    shadowRadius: 2,
+    elevation: 3, // Paper's shadow effect
   },
   eventTitle: {
-    fontWeight: 'bold',
-    fontSize: 18,
     marginBottom: 5,
   },
 });

@@ -5,17 +5,38 @@ import store from './store';
 import { ApolloProvider } from '@apollo/client';
 import client from './apolloClient';
 import EventList from './EventList';
+import { PaperProvider } from 'react-native-paper';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import { Appbar } from 'react-native-paper';
+import EventDetail from './EventDetail';
+
+const Stack = createStackNavigator();
+
+const GlobalHeader = () => (
+  <Appbar.Header>
+    <Appbar.Content title="Event Access Members" />
+  </Appbar.Header>
+);
 
 export default function App() {
   return (
-    <Provider store={store}>
-      <ApolloProvider client={client}>
-        <View style={styles.container}>
-          <EventList />
-          <StatusBar style="auto" />
-        </View>
-      </ApolloProvider>
-    </Provider>
+    <NavigationContainer>
+      <PaperProvider>
+        <Provider store={store}>
+          <ApolloProvider client={client}>
+              <Stack.Navigator
+                screenOptions={{
+                  header: () => <GlobalHeader />, // This will apply the global header
+                }}
+              >
+                <Stack.Screen name="EventList" component={EventList} />
+                <Stack.Screen name="EventDetail" component={EventDetail} />
+              </Stack.Navigator>
+          </ApolloProvider>
+        </Provider>
+      </PaperProvider>
+    </NavigationContainer>
   );
 }
 
