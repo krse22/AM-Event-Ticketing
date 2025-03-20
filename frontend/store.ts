@@ -18,6 +18,24 @@ const eventSlice = createSlice({
   },
 });
 
+const userSlice = createSlice({
+  name: 'user',
+  initialState: {
+    id: null,
+    firstName: '',
+    lastName: '',
+    email: '',
+    createdAt: '',
+    loading: false,
+    error: null,
+  },
+  reducers: {
+    setUser: (state, action) => {
+      return { ...state, ...action.payload, loading: false, error: null };
+    },
+  },
+});
+
 export const { setEvents } = eventSlice.actions;
 
 const store = configureStore({
@@ -26,5 +44,6 @@ const store = configureStore({
   },
 });
 
+export const { setUser } = userSlice.actions;
 export type RootState = ReturnType<typeof store.getState>;
 export default store;
