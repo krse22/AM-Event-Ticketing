@@ -6,18 +6,27 @@ import { ApolloProvider } from '@apollo/client';
 import client from './apolloClient';
 import EventList from './EventList';
 import { PaperProvider } from 'react-native-paper';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { Appbar } from 'react-native-paper';
 import EventDetail from './EventDetail';
 
 const Stack = createStackNavigator();
 
-const GlobalHeader = () => (
-  <Appbar.Header>
-    <Appbar.Content title="Event Access Members" />
-  </Appbar.Header>
-);
+const GlobalHeader = () => {
+  const navigation = useNavigation();
+
+  return (
+    <Appbar.Header>
+
+
+      {navigation.canGoBack() &&
+        <Appbar.BackAction onPress={() => navigation.goBack()} />
+      }
+      <Appbar.Content title="Event Access Members" />
+    </Appbar.Header>
+  );
+};
 
 export default function App() {
   return (

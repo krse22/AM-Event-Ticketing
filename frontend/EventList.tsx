@@ -26,9 +26,7 @@ const EventList = () => {
     await refetch();
     setRefreshing(false);
   };
-
-
-
+  
   if (loading) return <ActivityIndicator animating={true} size="large" />;
   if (error) return <Text>Error: {error.message}</Text>;
 
